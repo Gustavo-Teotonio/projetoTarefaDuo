@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
-const db = require('../db/conn');
+const { DataTypes } = require("sequelize");
+const db = require("../db/conn");
 
-const Task = db.define('Task', {
+const Task = db.define("Task", {
   title: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -12,6 +12,15 @@ const Task = db.define('Task', {
   done: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
+  },
+  priority: {
+    type: DataTypes.ENUM("Baixa", "Média", "Alta"),
+    defaultValue: "Média",
+    allowNull: false,
+  },
+  dueDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: true,
   },
 });
 

@@ -1,0 +1,81 @@
+<h2>Todas as Tarefas:</h2>
+
+<div style="margin-bottom: 20px;">
+  <label>Filtrar por Status:</label>
+  <select id="statusFilter" onchange="filterTasks()">
+    <option value="all">Todas</option>
+    <option value="pending">Pendentes</option>
+    <option value="completed">Concluídas</option>
+  </select>
+  
+  <label style="margin-left: 20px;">Filtrar por Prioridade:</label>
+  <select id="priorityFilter" onchange="filterTasks()">
+    <option value="all">Todas</option>
+    <option value="Baixa">Baixa</option>
+    <option value="Média">Média</option>
+    <option value="Alta">Alta</option>
+  </select>
+</div>
+
+{{#if tasks.length}}
+  <ul id="taskList">
+    {{#each tasks}}
+      <li class="task-item priority-{{this.priority}}" data-status="{{#if this.done}}completed{{else}}pending{{/if}}" data-priority="{{this.priority}}">
+        <div class="task-content">
+          <b>{{this.title}}</b>
+          <span class="task-description">- {{this.description}}</span>
+          <span class="task-priority priority-{{this.priority}}">[{{this.priority}}]</span>
+          {{#if this.dueDate}}
+            <span class="task-due-date">📅 {{this.dueDate}}</span>
+          {{/if}}
+          <span class="task-status">
+            {{#if this.done}}
+              ✅ Concluída
+            {{else}}
+              🕗 Pendente
+            {{/if}}
+          </span>
+        </div>
+        <div class="task-actions">
+          <a href="/tasks/edit/{{this.id}}">Editar</a>
+          <form style="display:inline;" method="post" action="/tasks/delete">
+            <input type="hidden" name="id" value="{{this.id}}" />
+            <button type="submit">Excluir</button>
+          </form>
+        </div>
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>🎉 Nenhuma tarefa cadastrada. Que tal criar uma nova?</p>
+{{/if}}
+
+<script>
+function filterTasks() {
+  const statusFilter = document.getElementById('statusFilter').value;
+  const priorityFilter = document.getElementById('priorityFilter').value;
+  const taskItems = document.querySelectorAll('.task-item');
+  
+  taskItems.forEach(item => {
+    const taskStatus = item.getAttribute('data-status');
+    const taskPriority = item.getAttribute('data-priority');
+    
+    let showStatus = true;
+    let showPriority = true;
+    
+    if (statusFilter !== 'all') {
+      showStatus = taskStatus === statusFilter;
+    }
+    
+    if (priorityFilter !== 'all') {
+      showPriority = taskPriority === priorityFilter;
+    }
+    
+    if (showStatus && showPriority) {
+      item.style.display = 'block';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+</script>
